@@ -1,0 +1,96 @@
+--DESAFIO QUANTOS PRODUTOS VERMELHOS TEM PRECO ENTRE 500 E 1000
+SELECT * FROM Production.Product
+
+SELECT count(Color) FROM Production.Product
+WHERE Color = 'Red'
+AND ListPrice > 500 
+AND ListPrice <= 1000
+
+SELECT count(*) AS 'PRODUTOS VERMELHOS' FROM Production.Product
+WHERE Color = 'Red'
+AND ListPrice BETWEEN 500 AND 1000
+
+--PRODUTOS  QUE TEM ESSA SEQ DE CARACTER NO NOME ROAD
+SELECT COUNT(Name) FROM Production.Product
+WHERE Name LIKE '%ROAD%'
+
+SELECT TOP 10 * FROM Sales.SalesOrderDetail
+
+SELECT SUM(LINETOTAL) AS TOTALVENDAS 
+FROM Sales.SalesOrderDetail
+SELECT MAX(LINETOTAL) AS TOTALVENDAS 
+FROM Sales.SalesOrderDetail
+SELECT MIN(LINETOTAL) AS TOTALVENDAS 
+FROM Sales.SalesOrderDetail
+SELECT AVG(LINETOTAL) AS TOTALVENDAS 
+FROM Sales.SalesOrderDetail
+
+SELECT FirstName, COUNT(FirstName) AS QTDE FROM Person.Person 
+GROUP BY FirstName
+
+SELECT SpecialOfferID, SUM(UnitPrice) AS 'TOTAL VENDAS' FROM Sales.SalesOrderDetail
+GROUP BY SpecialOfferID
+ORDER BY SUM(UnitPrice) DESC
+
+--DESAFIO QUANTOS PRODUTOS FORAM VENDIDOS ATE HOJE
+
+SELECT *FROM Sales.SalesOrderDetail
+SELECT ProductID, count(ProductID) AS 'QTDE PRODUTO ATÉ HOJE' FROM Sales.SalesOrderDetail
+GROUP BY ProductID
+
+-- NA TABELA DE PRODUTOS, A MEDIA DE PREÇOS DOS PRODUTOS QUE SAO PRATAS
+
+SELECT *FROM Production.Product
+SELECT Color, AVG(ListPrice)FROM Production.Product
+WHERE Color = 'silver'
+GROUP BY Color
+-- WHERE NUNCA PODE SER DEPOIS DO GROUP BY
+
+--QUANTAS PESSOAS TEM O MESMO MIDNAME NA TABELA PERSON.PERSON
+
+select MiddleName,COUNT(MiddleName) AS QTDE from Person.Person
+GROUP BY MiddleName
+ORDER BY MiddleName
+
+--DESAFIOS COM GROUP BY
+--1 QUAL A MEDIA QUE CADA PRODUTO É VENDIDO (SALES.Orderdetail) 
+SELECT * FROM Sales.SalesOrderDetail 
+SELECT ProductID, AVG(OrderQty) AS 'MEDIA' FROM sales.SalesOrderDetail
+GROUP BY ProductID
+
+--2 QUAIS OS 10 PRODUTOS QUE NO TOTAL TIVERAM OS MAIORES VALORES DE VENDA AGRUPADOS POR PRODUTO DO MAIOR PARA O MENOR (SALES.Orderdetail) 
+SELECT * FROM Sales.SalesOrderDetail
+SELECT TOP 10 ProductID, SUM(LineTotal) AS 'valores' FROM Sales.SalesOrderDetail
+GROUP BY ProductID
+ORDER BY  SUM(LineTotal) DESC
+
+--3 QUANTOS PRODUTOS E QUAL A QUANTIDADE MEDIA DE PRODUTO TEMOS CADASTRADOS NAS ORDENS DE SERVIÇOS (workorder) - AGRUPAR PELO ID DO PRODUTO (production.workorder) 
+SELECT * FROM Production.WorkOrder
+SELECT ProductID, count(ProductID) AS 'quantidade', AVG(OrderQty) AS 'Media' FROM Production.WorkOrder
+GROUP BY ProductID
+
+
+SELECT FirstName, COUNT(FirstName) AS QTDE FROM Person.Person 
+GROUP BY FirstName
+HAVING COUNT(FirstName) > 10
+ORDER BY FirstName 
+
+SELECT FirstName, COUNT(FirstName) AS QTDE FROM Person.Person
+WHERE FirstName LIKE 'A%'
+GROUP BY FirstName
+HAVING COUNT(FirstName) > 10
+ORDER BY FirstName 
+
+-- ARUPAR OS PRODUTOS[productid] POR VENDAS TOTAIS[linetotal] ENTRE 162K E 500K
+SELECT * FROM Sales.SalesOrderDetail
+SELECT ProductID, SUM(LineTotal) AS 'VENDAS TOTAIS' FROM Sales.SalesOrderDetail
+--WHERE UnitPrice BETWEEN 162 AND 500
+GROUP BY ProductID
+HAVING SUM(LineTotal) BETWEEN 162000 AND 500000
+ORDER BY ProductID
+
+-- QUAIS PRODUTOS NÃO ESTÃO TRAZENDO EM MEDIA VENDAS DE 1M NO TOTAL
+SELECT * FROM Sales.SalesOrderDetail
+SELECT ProductID, AVG(LineTotal) FROM Sales.SalesOrderDetail
+GROUP BY ProductID
+HAVING AVG(LineTotal) < 1000
